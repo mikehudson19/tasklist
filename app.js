@@ -3,13 +3,15 @@ const button = document.querySelector('#button');
 const allUl = document.querySelectorAll('ul')[0];
 const todayUl = document.querySelectorAll('ul')[1];
 const completeUl = document.querySelectorAll('ul')[2];
+const clearBtn = document.querySelector('.btn-clear');
 
 button.addEventListener('click', taskAdd);
 document.body.addEventListener('click', taskDelete);
 document.body.addEventListener('click', taskToday);
 document.body.addEventListener('click', taskComplete);
+clearBtn.addEventListener('click', clearAll);
 
-
+// ADD TASK FUNCTION 
 function taskAdd () {
   if (!input.value) {
     alert('Please enter a task!')
@@ -20,8 +22,6 @@ function taskAdd () {
 }
   input.value = '';
 }
-
-
 
 // DELETE TASK FUNCTION 
 function taskDelete (e) {
@@ -45,6 +45,19 @@ function taskComplete (e) {
     completeUl.appendChild(e.target.parentElement);
   }
 }
+// CLEAR ALL TASKS 
+function clearAll () {
+  const allTasks = allUl.querySelectorAll('li'); 
+  // for (let i = allTasks.length - 1; i >= 0; i--) {
+    
+  // }
+  let n = allTasks.length;
+  while (n > 0) {
+    n-- 
+  allTasks[n].remove();
+}
+}
+
 
 
 
