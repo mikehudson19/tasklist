@@ -2,10 +2,12 @@ const input = document.querySelector('input');
 const button = document.querySelector('#button');
 const allUl = document.querySelectorAll('ul')[0];
 const todayUl = document.querySelectorAll('ul')[1];
+const completeUl = document.querySelectorAll('ul')[2];
 
 button.addEventListener('click', taskAdd);
 document.body.addEventListener('click', taskDelete);
 document.body.addEventListener('click', taskToday);
+document.body.addEventListener('click', taskComplete);
 
 
 function taskAdd () {
@@ -33,6 +35,14 @@ function taskToday (e) {
   if (e.target.className.includes('fa-calendar')) {
     e.target.parentElement.remove();
     todayUl.appendChild(e.target.parentElement);
+  }
+}
+
+// COMPLETED TASK
+function taskComplete (e) {
+  if (e.target.className.includes('fa-check')) {
+    e.target.parentElement.remove();
+    completeUl.appendChild(e.target.parentElement);
   }
 }
 
