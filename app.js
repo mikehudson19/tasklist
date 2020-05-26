@@ -61,7 +61,7 @@ function clearAll () {
 
 // MOVE ALL TASKS BACK TO ALL
 function moveAll () {
-  const todayTasks = document.querySelectorAll('li');
+  const todayTasks = todayUl.querySelectorAll('li');
   let n = todayTasks.length;
   while (n > 0) {
     n-- 
