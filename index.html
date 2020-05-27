@@ -20,17 +20,17 @@
   <div id='all'>
     <h2>All Tasks</h2>
     <button class='btn-clear'></i>Clear All Tasks <i class="fas fa-trash-alt"></i></button>
-    <ul></ul>
+    <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
   <div id='today'>
     <h2>Today's Tasks</h2>
     <button class='btn-move'><i class="fas fa-arrow-circle-left"></i> Move Back to All</button>
-    <ul></ul>
+    <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
   <div id='completed'>
     <h2>Completed Tasks</h2>
     <button class='btn-completed'>Clear Completed Tasks <i class="fas fa-trash-alt"></i></button>
-    <ul></ul>
+    <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
 </div>
   <script src="app.js"></script>

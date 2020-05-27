@@ -23,12 +23,18 @@ function taskAdd (event) {
     alert('Please enter a task!')
   } else {
     const listItem = document.createElement('li');
+    listItem.setAttribute('draggable', 'true');
+    listItem.setAttribute('ondragstart', 'dragstart_handler(event)');
+    listItem.setAttribute('id', 'item');
+    listItem.classList.add('example');
     listItem.innerHTML = `${input.value} <i class="far fa-calendar-plus"></i> <i class="fas fa-check"></i> <i class="fas fa-trash-alt"></i> `;
     allUl.appendChild(listItem);
   }
   input.value = '';
   event.preventDefault();
 }
+
+
 
 // DELETE TASK FUNCTION 
 function taskDelete (e) {
@@ -83,7 +89,36 @@ function clearCompleted () {
   }
 }
 
+// ADD DRAG AND DROP FUNCTIONALITY
 
+function dragstart_handler(ev) {
+  ev.dataTransfer.setData("text/plain", ev.target.id);
+  console.log('works');
+}
+
+function dragover_handler(ev) {
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect = "move";
+ }
+
+ function drop_handler(ev) {
+  ev.preventDefault();
+  // Get the id of the target and add the moved element to the target's DOM
+  const data = ev.dataTransfer.getData("text/plain");
+  console.log(data);
+  ev.target.appendChild(document.getElementById(data));
+ }
+ 
+
+window.addEventListener('click', (ev) => {
+let selectedTask;
+
+  if (ev.target.className.includes('example')) {
+    selectedTask = ev.target;
+    selectedTask.addEventListener('dragstart', dragstart_handler);
+  }
+}
+)
 
 
 
