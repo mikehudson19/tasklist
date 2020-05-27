@@ -5,6 +5,7 @@ const todayUl = document.querySelectorAll('ul')[1];
 const completeUl = document.querySelectorAll('ul')[2];
 const clearBtn = document.querySelector('.btn-clear');
 const moveBtn = document.querySelector('.btn-move');
+const clearCompleteBtn = document.querySelector('.btn-completed')
 
 form.addEventListener('submit', taskAdd);
 document.body.addEventListener('click', taskDelete);
@@ -12,6 +13,8 @@ document.body.addEventListener('click', taskToday);
 document.body.addEventListener('click', taskComplete);
 clearBtn.addEventListener('click', clearAll);
 moveBtn.addEventListener('click', moveAll);
+clearCompleteBtn.addEventListener('click', clearCompleted);
+
 
 
 // ADD TASK FUNCTION 
@@ -67,6 +70,16 @@ function moveAll () {
     n-- 
     todayTasks[n].remove();
     allUl.appendChild(todayTasks[n]);
+  }
+}
+
+// CLEAR ALL COMPLETED TASKS
+function clearCompleted () {
+  const allCompleted = completeUl.querySelectorAll('li');
+  let n = allCompleted.length;
+  while (n > 0) {
+    n--
+    allCompleted[n].remove();
   }
 }
 
