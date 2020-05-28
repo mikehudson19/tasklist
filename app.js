@@ -38,7 +38,7 @@ function taskAdd(event) {
   event.preventDefault();
 }
 
-// PERSIST ADDED TASKS TO LOCAL STORAGE
+// ATTACH LOCALLY STORED TASKS TO THE DOM
 
 window.onload = () => {
   if (localStorage.getItem("allTasks") !== null) {
@@ -48,6 +48,15 @@ window.onload = () => {
       setAttributes(listItem);
       listItem.innerHTML = `${task} ${icons}`;
       allUl.appendChild(listItem);
+    }
+  }
+  if (localStorage.getItem("completeTasks") !== null) {
+    let tasks = JSON.parse(localStorage.getItem("completeTasks"));
+    for (let task of tasks) {
+      const listItem = document.createElement("li");
+      setAttributes(listItem);
+      listItem.innerHTML = `${task} ${icons}`;
+      completeUl.appendChild(listItem);
     }
   }
 };
@@ -64,16 +73,34 @@ function setAttributes(data) {
 // DELETE TASK FUNCTION
 function taskDelete(e) {
   if (e.target.className.includes("fa-trash")) {
-    tasks = retrieveTasks("allTasks");
-
-    // remove deleted task from local storage
-    tasks.forEach((obj, index) => {
-      if (e.target.parentElement.textContent.includes(obj)) {
-        tasks.splice(index, 1);
-      }
-    });
-    localStorage.setItem("allTasks", JSON.stringify(tasks));
-    e.target.parentElement.remove();
+    const listName = e.target.parentElement.parentElement.parentElement.id;
+    switch (listName) {
+      case "all":
+        tasks = retrieveTasks("allTasks");
+        // remove deleted task from local storage
+        tasks.forEach((obj, index) => {
+          if (e.target.parentElement.textContent.includes(obj)) {
+            tasks.splice(index, 1);
+          }
+        });
+        localStorage.setItem("allTasks", JSON.stringify(tasks));
+        e.target.parentElement.remove();
+        break;
+      case "today":
+        console.log("add today in here");
+        break;
+      case "completed":
+        tasks = retrieveTasks("completeTasks");
+        // remove deleted task from local storage
+        tasks.forEach((obj, index) => {
+          if (e.target.parentElement.textContent.includes(obj)) {
+            tasks.splice(index, 1);
+          }
+        });
+        localStorage.setItem("completeTasks", JSON.stringify(tasks));
+        e.target.parentElement.remove();
+        break;
+    }
   }
 }
 
@@ -103,7 +130,9 @@ function taskComplete(e) {
     e.target.parentElement.remove();
     completeUl.appendChild(e.target.parentElement);
 
-    localStorage.setItem("completeTasks", e.target.parentElement.textContent);
+    completeTasks = retrieveTasks("completeTasks");
+    completeTasks.push(e.target.parentElement.textContent);
+    localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
 
     tasks = retrieveTasks("allTasks");
 
@@ -125,7 +154,7 @@ function clearAll() {
     n--;
     allTasks[n].remove();
   }
-  localStorage.clear();
+  localStorage.removeItem("allTasks");
 }
 
 // MOVE ALL TASKS BACK TO ALL
@@ -145,8 +174,8 @@ function clearCompleted() {
   let n = allCompleted.length;
   while (n > 0) {
     n--;
-    allCompleted[n].remove();
   }
+  localStorage.removeItem("completeTasks");
 }
 
 // ADD DRAG AND DROP FUNCTIONALITY
