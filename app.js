@@ -87,7 +87,15 @@ function taskDelete(e) {
         e.target.parentElement.remove();
         break;
       case "today":
-        console.log("add today in here");
+        tasks = retrieveTasks("todayTasks");
+        // remove deleted task from local storage
+        tasks.forEach((obj, index) => {
+          if (e.target.parentElement.textContent.includes(obj)) {
+            tasks.splice(index, 1);
+          }
+        });
+        localStorage.setItem("todayTasks", JSON.stringify(tasks));
+        e.target.parentElement.remove();
         break;
       case "completed":
         tasks = retrieveTasks("completeTasks");
@@ -121,6 +129,21 @@ function taskToday(e) {
   if (e.target.className.includes("fa-calendar")) {
     e.target.parentElement.remove();
     todayUl.appendChild(e.target.parentElement);
+
+    todayTasks = retrieveTasks("todayTasks");
+    todayTasks.push(e.target.parentElement.textContent);
+    console.log(todayTasks);
+    localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
+
+    tasks = retrieveTasks("allTasks");
+
+    // remove deleted task from local storage
+    tasks.forEach((obj, index) => {
+      if (e.target.parentElement.textContent.includes(obj)) {
+        tasks.splice(index, 1);
+      }
+    });
+    localStorage.setItem("allTasks", JSON.stringify(tasks));
   }
 }
 
@@ -174,6 +197,7 @@ function clearCompleted() {
   let n = allCompleted.length;
   while (n > 0) {
     n--;
+    allCompleted[n].remove();
   }
   localStorage.removeItem("completeTasks");
 }
