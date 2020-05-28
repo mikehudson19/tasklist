@@ -25,97 +25,14 @@ function taskAdd(event) {
   } else {
     const listItem = document.createElement("li");
     setAttributes(listItem);
-
     listItem.innerHTML = `${input.value} ${icons}`;
     allUl.appendChild(listItem);
-
     tasks = retrieveTasks("allTasks");
-
     tasks.push(input.value);
     localStorage.setItem("allTasks", JSON.stringify(tasks));
   }
   input.value = "";
   event.preventDefault();
-}
-
-// ATTACH LOCALLY STORED TASKS TO THE DOM
-
-window.onload = () => {
-  if (localStorage.getItem("allTasks") !== null) {
-    let tasks = JSON.parse(localStorage.getItem("allTasks"));
-    for (let task of tasks) {
-      const listItem = document.createElement("li");
-      listItem.innerHTML = `${task} ${icons}`;
-      allUl.appendChild(listItem);
-      setAttributes(listItem);
-    }
-  }
-  if (localStorage.getItem("completeTasks") !== null) {
-    let tasks = JSON.parse(localStorage.getItem("completeTasks"));
-    for (let task of tasks) {
-      const listItem = document.createElement("li");
-      listItem.innerHTML = `${task} ${icons}`;
-      completeUl.appendChild(listItem);
-      setAttributes(listItem);
-    }
-  }
-  if (localStorage.getItem("todayTasks") !== null) {
-    let tasks = JSON.parse(localStorage.getItem("todayTasks"));
-    for (let task of tasks) {
-      const listItem = document.createElement("li");
-      listItem.innerHTML = `${task} ${icons}`;
-      todayUl.appendChild(listItem);
-      setAttributes(listItem);
-    }
-  }
-};
-
-// SET ATTRIBUTES FOR THE LIST ITEMS
-function setAttributes(data) {
-  data.setAttribute("draggable", "true");
-  data.setAttribute("ondragstart", "dragstart_handler(event)");
-  n += 1;
-  data.setAttribute("id", `item${n}`);
-  data.classList.add("example");
-}
-
-// REMOVE SINGLE TASK FROM ARRAY
-function taskSplice(e, tasks) {
-  tasks.forEach((obj, index) => {
-    if (e.target.parentElement.textContent.includes(obj)) {
-      tasks.splice(index, 1);
-    }
-  });
-}
-
-// DELETE TASK FUNCTION
-function taskDelete(e) {
-  if (e.target.className.includes("fa-trash")) {
-    const listName = e.target.parentElement.parentElement.parentElement.id;
-    switch (listName) {
-      case "all":
-        tasks = retrieveTasks("allTasks");
-        // remove deleted task from local storage
-        taskSplice(e, tasks);
-        localStorage.setItem("allTasks", JSON.stringify(tasks));
-        e.target.parentElement.remove();
-        break;
-      case "today":
-        tasks = retrieveTasks("todayTasks");
-        // remove deleted task from local storage
-        taskSplice(e, tasks);
-        localStorage.setItem("todayTasks", JSON.stringify(tasks));
-        e.target.parentElement.remove();
-        break;
-      case "completed":
-        tasks = retrieveTasks("completeTasks");
-        // remove deleted task from local storage
-        taskSplice(e, tasks);
-        localStorage.setItem("completeTasks", JSON.stringify(tasks));
-        e.target.parentElement.remove();
-        break;
-    }
-  }
 }
 
 // RETRIEVE TASKS FROM LOCAL STORAGE
@@ -130,6 +47,75 @@ function retrieveTasks(taskList) {
   return tasks;
 }
 
+// REMOVE SINGLE TASK FROM ARRAY
+function taskSplice(e, tasks, key) {
+  tasks.forEach((obj, index) => {
+    if (e.target.parentElement.textContent.includes(obj)) {
+      tasks.splice(index, 1);
+    }
+  });
+  localStorage.setItem(key, JSON.stringify(tasks));
+}
+
+// SET ATTRIBUTES FOR THE LIST ITEMS
+function setAttributes(data) {
+  data.setAttribute("draggable", "true");
+  data.setAttribute("ondragstart", "dragstart_handler(event)");
+  n += 1;
+  data.setAttribute("id", `item${n}`);
+  data.classList.add("example");
+}
+
+// GET TASKS FROM LOCAL STORAGE
+
+function getFromLS(key, icons, ul) {
+  let tasks = JSON.parse(localStorage.getItem(key));
+  for (let task of tasks) {
+    const listItem = document.createElement("li");
+    listItem.innerHTML = `${task} ${icons}`;
+    ul.appendChild(listItem);
+    setAttributes(listItem);
+  }
+}
+
+// ATTACH LOCALLY STORED TASKS TO THE DOM
+
+window.onload = () => {
+  if (localStorage.getItem("allTasks") !== null) {
+    getFromLS("allTasks", icons, allUl);
+  }
+  if (localStorage.getItem("completeTasks") !== null) {
+    getFromLS("completeTasks", icons, completeUl);
+  }
+  if (localStorage.getItem("todayTasks") !== null) {
+    getFromLS("todayTasks", icons, todayUl);
+  }
+};
+
+// DELETE TASK FUNCTION
+function taskDelete(e) {
+  if (e.target.className.includes("fa-trash")) {
+    const listName = e.target.parentElement.parentElement.parentElement.id;
+    switch (listName) {
+      case "all":
+        tasks = retrieveTasks("allTasks");
+        taskSplice(e, tasks, "allTasks");
+        e.target.parentElement.remove();
+        break;
+      case "today":
+        tasks = retrieveTasks("todayTasks");
+        taskSplice(e, tasks, "todayTasks");
+        e.target.parentElement.remove();
+        break;
+      case "completed":
+        tasks = retrieveTasks("completeTasks");
+        taskSplice(e, tasks, "completeTasks");
+        e.target.parentElement.remove();
+        break;
+    }
+  }
+}
+
 // MOVE TASK TO TODAY
 function taskToday(e) {
   if (e.target.className.includes("fa-calendar")) {
@@ -142,16 +128,10 @@ function taskToday(e) {
     localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
 
     allTasks = retrieveTasks("allTasks");
-
-    // remove deleted task from local storage
-    taskSplice(e, allTasks);
-    localStorage.setItem("allTasks", JSON.stringify(allTasks));
+    taskSplice(e, allTasks, "allTasks");
 
     completeTasks = retrieveTasks("completeTasks");
-
-    // remove deleted task from local storage
-    taskSplice(e, completeTasks);
-    localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
+    taskSplice(e, completeTasks, "completeTasks");
   }
 }
 
@@ -168,15 +148,10 @@ function taskComplete(e) {
 
     if (listName === "all") {
       tasks = retrieveTasks("allTasks");
-
-      // remove deleted task from local storage
-      taskSplice(e, tasks);
-      localStorage.setItem("allTasks", JSON.stringify(tasks));
+      taskSplice(e, tasks, "allTasks");
     } else if (listName === "today") {
       todayTasks = retrieveTasks("todayTasks");
-      // remove deleted task from local storage
-      taskSplice(e, todayTasks);
-      localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
+      taskSplice(e, todayTasks, "todayTasks");
     }
   }
 }
