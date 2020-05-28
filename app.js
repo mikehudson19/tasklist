@@ -67,6 +67,19 @@ function setAttributes(data) {
 // DELETE TASK FUNCTION
 function taskDelete(e) {
   if (e.target.className.includes("fa-trash")) {
+    let tasks;
+    if (localStorage.getItem("allTasks") === null) {
+      tasks = [];
+    } else {
+      tasks = JSON.parse(localStorage.getItem("allTasks"));
+    }
+    // remove deleted task from local storage
+    tasks.forEach((obj, index) => {
+      if (e.target.parentElement.textContent.includes(obj)) {
+        tasks.splice(index, 1);
+      }
+    });
+    localStorage.setItem("allTasks", JSON.stringify(tasks));
     e.target.parentElement.remove();
   }
 }
@@ -94,6 +107,7 @@ function clearAll() {
     n--;
     allTasks[n].remove();
   }
+  localStorage.clear();
 }
 
 // MOVE ALL TASKS BACK TO ALL
