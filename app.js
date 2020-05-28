@@ -144,16 +144,26 @@ function taskToday(e) {
 
     localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
 
-    tasks = retrieveTasks("allTasks");
+    allTasks = retrieveTasks("allTasks");
 
     // remove deleted task from local storage
-    tasks.forEach((obj, index) => {
+    allTasks.forEach((obj, index) => {
       if (e.target.parentElement.textContent.includes(obj)) {
-        tasks.splice(index, 1);
+        allTasks.splice(index, 1);
       }
     });
-    localStorage.setItem("allTasks", JSON.stringify(tasks));
+    localStorage.setItem("allTasks", JSON.stringify(allTasks));
   }
+
+  completeTasks = retrieveTasks("completeTasks");
+
+  // remove deleted task from local storage
+  completeTasks.forEach((obj, index) => {
+    if (e.target.parentElement.textContent.includes(obj)) {
+      completeTasks.splice(index, 1);
+    }
+  });
+  localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
 }
 
 // COMPLETED TASK
@@ -219,7 +229,6 @@ function moveAll() {
     localStorage.removeItem("todayTasks", obj);
   });
   localStorage.setItem("allTasks", JSON.stringify(allTasks));
-  // localStorage.removeItem("todayTasks");
 }
 
 // CLEAR ALL COMPLETED TASKS
