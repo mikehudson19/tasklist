@@ -45,18 +45,27 @@ window.onload = () => {
     let tasks = JSON.parse(localStorage.getItem("allTasks"));
     for (let task of tasks) {
       const listItem = document.createElement("li");
-      setAttributes(listItem);
       listItem.innerHTML = `${task} ${icons}`;
       allUl.appendChild(listItem);
+      setAttributes(listItem);
     }
   }
   if (localStorage.getItem("completeTasks") !== null) {
     let tasks = JSON.parse(localStorage.getItem("completeTasks"));
     for (let task of tasks) {
       const listItem = document.createElement("li");
-      setAttributes(listItem);
       listItem.innerHTML = `${task} ${icons}`;
       completeUl.appendChild(listItem);
+      setAttributes(listItem);
+    }
+  }
+  if (localStorage.getItem("todayTasks") !== null) {
+    let tasks = JSON.parse(localStorage.getItem("todayTasks"));
+    for (let task of tasks) {
+      const listItem = document.createElement("li");
+      listItem.innerHTML = `${task} ${icons}`;
+      todayUl.appendChild(listItem);
+      setAttributes(listItem);
     }
   }
 };
@@ -72,8 +81,8 @@ function setAttributes(data) {
 
 // DELETE TASK FUNCTION
 function taskDelete(e) {
+  const listName = e.target.parentElement.parentElement.parentElement.id;
   if (e.target.className.includes("fa-trash")) {
-    const listName = e.target.parentElement.parentElement.parentElement.id;
     switch (listName) {
       case "all":
         tasks = retrieveTasks("allTasks");
@@ -132,7 +141,7 @@ function taskToday(e) {
 
     todayTasks = retrieveTasks("todayTasks");
     todayTasks.push(e.target.parentElement.textContent);
-    console.log(todayTasks);
+
     localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
 
     tasks = retrieveTasks("allTasks");
@@ -150,6 +159,7 @@ function taskToday(e) {
 // COMPLETED TASK
 function taskComplete(e) {
   if (e.target.className.includes("fa-check")) {
+    const listName = e.target.parentElement.parentElement.parentElement.id;
     e.target.parentElement.remove();
     completeUl.appendChild(e.target.parentElement);
 
@@ -157,15 +167,28 @@ function taskComplete(e) {
     completeTasks.push(e.target.parentElement.textContent);
     localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
 
-    tasks = retrieveTasks("allTasks");
+    if (listName === "all") {
+      tasks = retrieveTasks("allTasks");
 
-    // remove deleted task from local storage
-    tasks.forEach((obj, index) => {
-      if (e.target.parentElement.textContent.includes(obj)) {
-        tasks.splice(index, 1);
-      }
-    });
-    localStorage.setItem("allTasks", JSON.stringify(tasks));
+      // remove deleted task from local storage
+      tasks.forEach((obj, index) => {
+        if (e.target.parentElement.textContent.includes(obj)) {
+          tasks.splice(index, 1);
+        }
+      });
+      localStorage.setItem("allTasks", JSON.stringify(tasks));
+    } else if (listName === "today") {
+      todayTasks = retrieveTasks("todayTasks");
+      console.log(todayTasks);
+
+      // remove deleted task from local storage
+      todayTasks.forEach((obj, index) => {
+        if (e.target.parentElement.textContent.includes(obj)) {
+          todayTasks.splice(index, 1);
+        }
+      });
+      localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
+    }
   }
 }
 
@@ -189,6 +212,14 @@ function moveAll() {
     todayTasks[n].remove();
     allUl.appendChild(todayTasks[n]);
   }
+  tasks = retrieveTasks("todayTasks");
+  allTasks = retrieveTasks("allTasks");
+  tasks.forEach((obj) => {
+    allTasks.push(obj);
+    localStorage.removeItem("todayTasks", obj);
+  });
+  localStorage.setItem("allTasks", JSON.stringify(allTasks));
+  // localStorage.removeItem("todayTasks");
 }
 
 // CLEAR ALL COMPLETED TASKS
