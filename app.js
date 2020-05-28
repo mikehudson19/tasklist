@@ -16,6 +16,7 @@ document.body.addEventListener("click", taskComplete);
 clearBtn.addEventListener("click", clearAll);
 moveBtn.addEventListener("click", moveAll);
 clearCompleteBtn.addEventListener("click", clearCompleted);
+
 // ADD TASK FUNCTION
 let n = 0;
 function taskAdd(event) {
@@ -28,12 +29,8 @@ function taskAdd(event) {
     listItem.innerHTML = `${input.value} ${icons}`;
     allUl.appendChild(listItem);
 
-    let tasks;
-    if (localStorage.getItem("allTasks") === null) {
-      tasks = [];
-    } else {
-      tasks = JSON.parse(localStorage.getItem("allTasks"));
-    }
+    tasks = retrieveTasks("allTasks");
+
     tasks.push(input.value);
     localStorage.setItem("allTasks", JSON.stringify(tasks));
   }
@@ -67,12 +64,8 @@ function setAttributes(data) {
 // DELETE TASK FUNCTION
 function taskDelete(e) {
   if (e.target.className.includes("fa-trash")) {
-    let tasks;
-    if (localStorage.getItem("allTasks") === null) {
-      tasks = [];
-    } else {
-      tasks = JSON.parse(localStorage.getItem("allTasks"));
-    }
+    tasks = retrieveTasks("allTasks");
+
     // remove deleted task from local storage
     tasks.forEach((obj, index) => {
       if (e.target.parentElement.textContent.includes(obj)) {
@@ -82,6 +75,18 @@ function taskDelete(e) {
     localStorage.setItem("allTasks", JSON.stringify(tasks));
     e.target.parentElement.remove();
   }
+}
+
+// RETRIEVE TASKS FROM LOCAL STORAGE
+
+function retrieveTasks(taskList) {
+  let tasks;
+  if (localStorage.getItem(taskList) === null) {
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem(taskList));
+  }
+  return tasks;
 }
 
 // MOVE TASK TO TODAY
@@ -97,8 +102,21 @@ function taskComplete(e) {
   if (e.target.className.includes("fa-check")) {
     e.target.parentElement.remove();
     completeUl.appendChild(e.target.parentElement);
+
+    localStorage.setItem("completeTasks", e.target.parentElement.textContent);
+
+    tasks = retrieveTasks("allTasks");
+
+    // remove deleted task from local storage
+    tasks.forEach((obj, index) => {
+      if (e.target.parentElement.textContent.includes(obj)) {
+        tasks.splice(index, 1);
+      }
+    });
+    localStorage.setItem("allTasks", JSON.stringify(tasks));
   }
 }
+
 // CLEAR ALL TASKS
 function clearAll() {
   const allTasks = allUl.querySelectorAll("li");
