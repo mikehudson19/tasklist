@@ -79,41 +79,38 @@ function setAttributes(data) {
   data.classList.add("example");
 }
 
+// REMOVE SINGLE TASK FROM ARRAY
+function taskSplice(e, tasks) {
+  tasks.forEach((obj, index) => {
+    if (e.target.parentElement.textContent.includes(obj)) {
+      tasks.splice(index, 1);
+    }
+  });
+}
+
 // DELETE TASK FUNCTION
 function taskDelete(e) {
-  const listName = e.target.parentElement.parentElement.parentElement.id;
   if (e.target.className.includes("fa-trash")) {
+    const listName = e.target.parentElement.parentElement.parentElement.id;
     switch (listName) {
       case "all":
         tasks = retrieveTasks("allTasks");
         // remove deleted task from local storage
-        tasks.forEach((obj, index) => {
-          if (e.target.parentElement.textContent.includes(obj)) {
-            tasks.splice(index, 1);
-          }
-        });
+        taskSplice(e, tasks);
         localStorage.setItem("allTasks", JSON.stringify(tasks));
         e.target.parentElement.remove();
         break;
       case "today":
         tasks = retrieveTasks("todayTasks");
         // remove deleted task from local storage
-        tasks.forEach((obj, index) => {
-          if (e.target.parentElement.textContent.includes(obj)) {
-            tasks.splice(index, 1);
-          }
-        });
+        taskSplice(e, tasks);
         localStorage.setItem("todayTasks", JSON.stringify(tasks));
         e.target.parentElement.remove();
         break;
       case "completed":
         tasks = retrieveTasks("completeTasks");
         // remove deleted task from local storage
-        tasks.forEach((obj, index) => {
-          if (e.target.parentElement.textContent.includes(obj)) {
-            tasks.splice(index, 1);
-          }
-        });
+        taskSplice(e, tasks);
         localStorage.setItem("completeTasks", JSON.stringify(tasks));
         e.target.parentElement.remove();
         break;
@@ -147,23 +144,15 @@ function taskToday(e) {
     allTasks = retrieveTasks("allTasks");
 
     // remove deleted task from local storage
-    allTasks.forEach((obj, index) => {
-      if (e.target.parentElement.textContent.includes(obj)) {
-        allTasks.splice(index, 1);
-      }
-    });
+    taskSplice(e, allTasks);
     localStorage.setItem("allTasks", JSON.stringify(allTasks));
+
+    completeTasks = retrieveTasks("completeTasks");
+
+    // remove deleted task from local storage
+    taskSplice(e, completeTasks);
+    localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
   }
-
-  completeTasks = retrieveTasks("completeTasks");
-
-  // remove deleted task from local storage
-  completeTasks.forEach((obj, index) => {
-    if (e.target.parentElement.textContent.includes(obj)) {
-      completeTasks.splice(index, 1);
-    }
-  });
-  localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
 }
 
 // COMPLETED TASK
@@ -181,22 +170,12 @@ function taskComplete(e) {
       tasks = retrieveTasks("allTasks");
 
       // remove deleted task from local storage
-      tasks.forEach((obj, index) => {
-        if (e.target.parentElement.textContent.includes(obj)) {
-          tasks.splice(index, 1);
-        }
-      });
+      taskSplice(e, tasks);
       localStorage.setItem("allTasks", JSON.stringify(tasks));
     } else if (listName === "today") {
       todayTasks = retrieveTasks("todayTasks");
-      console.log(todayTasks);
-
       // remove deleted task from local storage
-      todayTasks.forEach((obj, index) => {
-        if (e.target.parentElement.textContent.includes(obj)) {
-          todayTasks.splice(index, 1);
-        }
-      });
+      taskSplice(e, todayTasks);
       localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
     }
   }
