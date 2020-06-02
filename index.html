@@ -8,28 +8,32 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="alert">
+    <p>Please enter a task!</p>
+    <button class="alert-btn">Okay</button>
+  </div>
   <h1>Task List</h1>
   <div class='task-input'>  
     <h2>Input task here</h2>
     <form>
     <input type="text" placeholder="Add task here">
-    <button type="submit" id="button">Add Task</button>
+    <button class="btn" type="submit" id="button">Add Task</button>
   </form>
   </div>
   <div class='boxes'>
   <div id='all'>
     <h2>All Tasks</h2>
-    <button class='btn-clear'></i>Clear All Tasks <i class="fas fa-trash-alt"></i></button>
+    <button class='btn btn-clear'></i>Clear All Tasks</button>
     <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
   <div id='today'>
     <h2>Today's Tasks</h2>
-    <button class='btn-move'><i class="fas fa-arrow-circle-left"></i> Move Back to All</button>
+    <button class='btn btn-move'>Move Back to All</button>
     <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
   <div id='completed'>
     <h2>Completed Tasks</h2>
-    <button class='btn-completed'>Clear Completed Tasks <i class="fas fa-trash-alt"></i></button>
+    <button class='btn btn-completed'>Clear Completed Tasks</button>
     <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
 </div>

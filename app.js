@@ -6,6 +6,7 @@ const completeUl = document.querySelectorAll("ul")[2];
 const clearBtn = document.querySelector(".btn-clear");
 const moveBtn = document.querySelector(".btn-move");
 const clearCompleteBtn = document.querySelector(".btn-completed");
+const alert = document.querySelector('.alert');
 const icons =
   '<i class="far fa-calendar-plus"></i> <i class="fas fa-check"></i> <i class="fas fa-trash-alt"></i>';
 
@@ -21,7 +22,12 @@ clearCompleteBtn.addEventListener("click", clearCompleted);
 let n = 0;
 function taskAdd(event) {
   if (!input.value) {
-    alert("Please enter a task!");
+    alert.style.display = 'block';
+    alert.style.display = 'flex';
+    document.querySelector('.alert-btn').addEventListener('click', () => {
+    alert.style.display = 'none';
+
+    })
   } else {
     const listItem = document.createElement("li");
     setAttributes(listItem);
@@ -48,7 +54,8 @@ function retrieveTasks(taskList) {
 }
 
 // REMOVE SINGLE TASK FROM ARRAY
-function taskSplice(e, tasks, key) {
+function taskSplice(e, key) {
+  tasks = retrieveTasks(key);
   tasks.forEach((obj, index) => {
     if (e.target.parentElement.textContent.includes(obj)) {
       tasks.splice(index, 1);
@@ -67,7 +74,6 @@ function setAttributes(data) {
 }
 
 // GET TASKS FROM LOCAL STORAGE
-
 function getFromLS(key, icons, ul) {
   let tasks = JSON.parse(localStorage.getItem(key));
   for (let task of tasks) {
@@ -98,18 +104,15 @@ function taskDelete(e) {
     const listName = e.target.parentElement.parentElement.parentElement.id;
     switch (listName) {
       case "all":
-        tasks = retrieveTasks("allTasks");
-        taskSplice(e, tasks, "allTasks");
+        taskSplice(e, "allTasks");
         e.target.parentElement.remove();
         break;
       case "today":
-        tasks = retrieveTasks("todayTasks");
-        taskSplice(e, tasks, "todayTasks");
+        taskSplice(e, "todayTasks");
         e.target.parentElement.remove();
         break;
       case "completed":
-        tasks = retrieveTasks("completeTasks");
-        taskSplice(e, tasks, "completeTasks");
+        taskSplice(e, "completeTasks");
         e.target.parentElement.remove();
         break;
     }
@@ -121,17 +124,12 @@ function taskToday(e) {
   if (e.target.className.includes("fa-calendar")) {
     e.target.parentElement.remove();
     todayUl.appendChild(e.target.parentElement);
-
     todayTasks = retrieveTasks("todayTasks");
     todayTasks.push(e.target.parentElement.textContent);
-
     localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
 
-    allTasks = retrieveTasks("allTasks");
-    taskSplice(e, allTasks, "allTasks");
-
-    completeTasks = retrieveTasks("completeTasks");
-    taskSplice(e, completeTasks, "completeTasks");
+    taskSplice(e, "allTasks");
+    taskSplice(e, "completeTasks");
   }
 }
 
@@ -141,17 +139,14 @@ function taskComplete(e) {
     const listName = e.target.parentElement.parentElement.parentElement.id;
     e.target.parentElement.remove();
     completeUl.appendChild(e.target.parentElement);
-
     completeTasks = retrieveTasks("completeTasks");
     completeTasks.push(e.target.parentElement.textContent);
     localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
 
     if (listName === "all") {
-      tasks = retrieveTasks("allTasks");
-      taskSplice(e, tasks, "allTasks");
+      taskSplice(e, "allTasks");
     } else if (listName === "today") {
-      todayTasks = retrieveTasks("todayTasks");
-      taskSplice(e, todayTasks, "todayTasks");
+      taskSplice(e, "todayTasks");
     }
   }
 }
