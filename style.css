@@ -1,3 +1,9 @@
+:root {
+  --dark-color: rgb(21, 21, 21);
+  --mid-color: rgba(133, 131, 134, 0.199);
+  --light-color: rgb(224, 224, 224);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,7 +13,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .boxes {
@@ -17,11 +23,15 @@
 
 h1 {
   text-align: center;
+  margin-top: 1.6rem;
+  font-weight: 500;
+  font-size: 2.6rem;
 }
 
 body {
-  background: rgb(19, 19, 19);
-  color: rgb(224, 224, 224);
+  background: var(--dark-color);
+  color: var(--light-color);
+  font-family: 'Dosis', sans-serif;
 }
 
 #all,
@@ -29,10 +39,10 @@ body {
 #completed {
   display: flex;
   flex-direction: column;
-  background: rgba(62, 62, 63, 0.301);
+  background: var(--mid-color);
   width: 20rem;
   align-items: center;
-  border: solid 1.5px rgba(255, 255, 255, 0.445);
+  border: solid 1.5px var(--mid-color);
   border-radius: 5px;
   height: 24rem;
 }
@@ -77,6 +87,17 @@ ul {
   margin-top: 0.5rem;
 }
 
+.boxes h2 {
+  margin-top: 1.4rem;
+  font-weight: 500;
+}
+
+.boxes ul {
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.6px;
+}
+
 .alert {
   background: rgb(75, 75, 75);
   width: 25rem;
@@ -107,4 +128,20 @@ ul {
 .alert p {
   font-size: 1.2rem;
   font-weight: 500;
+}
+
+.fa-calendar-plus:hover {
+  color:rgb(44, 126, 233);
+  cursor: pointer;
+}
+
+.fa-check:hover {
+  color: rgb(0, 187, 0);
+  cursor: pointer;
+}
+
+.fa-trash-alt:hover {
+  color:red;
+  cursor: pointer;
+
 }
