@@ -69,7 +69,7 @@ function setAttributes(data) {
   data.setAttribute("ondragstart", "dragstart_handler(event)");
   n += 1;
   data.setAttribute("id", `item${n}`);
-  data.classList.add("example");
+  data.classList.add("drag");
 }
 
 // GET TASKS FROM LOCAL STORAGE
@@ -88,7 +88,7 @@ function onMove (e, ul, key) {
   e.target.parentElement.remove();
   ul.appendChild(e.target.parentElement);
   tasks = retrieveTasks(key);
-  tasks.push(e.target.parentElement.textContent);
+  tasks.push(e.target.parentElement.innerText);
   localStorage.setItem(key, JSON.stringify(tasks));
 };
 
@@ -209,28 +209,52 @@ function clearCompleted() {
   localStorage.removeItem("completeTasks");
 }
 
+
 // ADD DRAG AND DROP FUNCTIONALITY
 
-function dragstart_handler(ev) {
-  ev.dataTransfer.setData("text/plain", ev.target.id);
+function dragstart_handler(e) {
+  e.dataTransfer.setData("text/plain", e.target.id);
 }
 
-function dragover_handler(ev) {
-  ev.preventDefault();
-  ev.dataTransfer.dropEffect = "move";
+function dragover_handler(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
 }
 
-function drop_handler(ev) {
-  ev.preventDefault();
+function drop_handler(e) {
+  e.preventDefault();
   // Get the id of the target and add the moved element to the target's DOM
-  const data = ev.dataTransfer.getData("text/plain");
-  ev.target.appendChild(document.getElementById(data));
+  const data = e.dataTransfer.getData("text/plain");
+  e.target.appendChild(document.getElementById(data));
+
+
+  
+  if (e.target.parentElement.id === 'today') {
+    // Move selected task to 'today' in LS
+    tasks = retrieveTasks('todayTasks');
+    tasks.push(document.getElementById(data).innerText);
+    localStorage.setItem('todayTasks', JSON.stringify(tasks));
+    // Remove the item from original list LS
+    const movedTask = document.getElementById(data).innerText;
+    const allTasks = retrieveTasks('allTasks');
+    allTasks.forEach((obj, index) => {
+      if (obj === movedTask ) {
+        allTasks.splice(index, 1);
+      } 
+      localStorage.setItem('allTasks', JSON.stringify(allTasks));
+    })
+  }
+  
+
+
 }
 
-window.addEventListener("mousedown", (ev) => {
+window.addEventListener("mousedown", (e) => {
   let selectedTask;
-  if (ev.target.className.includes("example")) {
-    selectedTask = ev.target;
+  if (e.target.className.includes("drag")) {
+    selectedTask = e.target;
     selectedTask.addEventListener("dragstart", dragstart_handler);
   }
 });
+
+
