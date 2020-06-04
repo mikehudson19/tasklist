@@ -21,14 +21,13 @@ clearCompleteBtn.addEventListener("click", clearCompleted);
 // ADD TASK FUNCTION
 let n = 0;
 function taskAdd(event) {
-  if (!input.value) {
+  if (!input.value) { // If no task has been entered
     alert.style.display = 'block';
     alert.style.display = 'flex';
     document.querySelector('.alert-btn').addEventListener('click', () => {
     alert.style.display = 'none';
-
     })
-  } else {
+  } else { // If a task has been entered
     const listItem = document.createElement("li");
     setAttributes(listItem);
     listItem.innerHTML = `${input.value} ${icons}`;
@@ -84,8 +83,17 @@ function getFromLS(key, icons, ul) {
   }
 }
 
-// ATTACH LOCALLY STORED TASKS TO THE DOM
+// MOVE TASK FROM CURRENT LIST TO SELECTED LIST
+function onMove (e, ul, key) {
+  e.target.parentElement.remove();
+  ul.appendChild(e.target.parentElement);
+  tasks = retrieveTasks(key);
+  tasks.push(e.target.parentElement.textContent);
+  localStorage.setItem(key, JSON.stringify(tasks));
+};
 
+
+// RETRIEVE TASKS FROM LS AND ATTACH TO THE DOM
 window.onload = () => {
   if (localStorage.getItem("allTasks") !== null) {
     getFromLS("allTasks", icons, allUl);
@@ -102,6 +110,7 @@ window.onload = () => {
 function taskDelete(e) {
   if (e.target.className.includes("fa-trash")) {
     const listName = e.target.parentElement.parentElement.parentElement.id;
+    // Determine which list the selected task is in and remove from DOM and LS
     switch (listName) {
       case "all":
         taskSplice(e, "allTasks");
@@ -119,30 +128,32 @@ function taskDelete(e) {
   }
 }
 
-// MOVE TASK TO TODAY
+
+
+// MOVE TASK TO TODAY LIST
 function taskToday(e) {
   if (e.target.className.includes("fa-calendar")) {
-    e.target.parentElement.remove();
-    todayUl.appendChild(e.target.parentElement);
-    todayTasks = retrieveTasks("todayTasks");
-    todayTasks.push(e.target.parentElement.textContent);
-    localStorage.setItem("todayTasks", JSON.stringify(todayTasks));
+    const listName = e.target.parentElement.parentElement.parentElement.id;
+    // Move seleted task to 'today' in DOM and LS
+    onMove(e, todayUl, "todayTasks");
 
-    taskSplice(e, "allTasks");
-    taskSplice(e, "completeTasks");
+    // Check which list the moved task came from and remove it from that LS key
+    if (listName === "all") {
+      taskSplice(e, "allTasks");
+    } else if (listName === "completed") {
+      taskSplice(e, "completeTasks");
+    }
   }
 }
 
-// COMPLETED TASK
+// MOVE TASK TO COMPLETED LIST
 function taskComplete(e) {
   if (e.target.className.includes("fa-check")) {
     const listName = e.target.parentElement.parentElement.parentElement.id;
-    e.target.parentElement.remove();
-    completeUl.appendChild(e.target.parentElement);
-    completeTasks = retrieveTasks("completeTasks");
-    completeTasks.push(e.target.parentElement.textContent);
-    localStorage.setItem("completeTasks", JSON.stringify(completeTasks));
-
+     // Move seleted task to 'complete' in DOM and LS
+    onMove(e, completeUl, 'completeTasks')
+  
+    // Check which list the moved task came from and remove it from that LS key
     if (listName === "all") {
       taskSplice(e, "allTasks");
     } else if (listName === "today") {
@@ -155,10 +166,12 @@ function taskComplete(e) {
 function clearAll() {
   const allTasks = allUl.querySelectorAll("li");
   let n = allTasks.length;
+  // Loop through the all tasks list and remove each task
   while (n > 0) {
     n--;
     allTasks[n].remove();
   }
+  // Remove the 'allTasks' key from local storage
   localStorage.removeItem("allTasks");
 }
 
@@ -166,13 +179,16 @@ function clearAll() {
 function moveAll() {
   const todayTasks = todayUl.querySelectorAll("li");
   let n = todayTasks.length;
+  // While there are tasks in the 'today' UL, remove them an append to the 'all' UL
   while (n > 0) {
     n--;
     todayTasks[n].remove();
     allUl.appendChild(todayTasks[n]);
   }
+  // Retrieve 'all' and 'today' tasks from LS
   tasks = retrieveTasks("todayTasks");
   allTasks = retrieveTasks("allTasks");
+  // Add each task in 'today' to 'all' and remove from 'today'
   tasks.forEach((obj) => {
     allTasks.push(obj);
     localStorage.removeItem("todayTasks", obj);
@@ -182,12 +198,14 @@ function moveAll() {
 
 // CLEAR ALL COMPLETED TASKS
 function clearCompleted() {
-  const allCompleted = completeUl.querySelectorAll("li");
-  let n = allCompleted.length;
-  while (n > 0) {
+  const completed = completeUl.querySelectorAll("li");
+  let n = completed.length;
+  // While there are still tasks in 'completed', loop through and remove
+  while (n > 0) { 
     n--;
-    allCompleted[n].remove();
+    completed[n].remove();
   }
+  // Remove the comeplete tasks key from LS
   localStorage.removeItem("completeTasks");
 }
 
