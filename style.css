@@ -1,12 +1,22 @@
 :root {
   --dark-color: rgb(21, 21, 21);
-  --mid-color: rgba(170, 170, 170, 0.123);
+  --mid-color: rgb(65, 65, 65);
+  --edge-color: rgba(185, 185, 185, 0.123);
   --light-color: rgb(224, 224, 224);
 }
 
 * {
   margin: 0;
   padding: 0;
+}
+
+/* ---------- GENERAL PAGE STYLINGS ---------- */
+
+body {
+  background: var(--dark-color);
+  color: var(--light-color);
+  font-family: 'Dosis', sans-serif;
+  /* filter: blur(2px); */
 }
 
 .task-input {
@@ -21,36 +31,25 @@
   justify-content: space-around;
 }
 
-h1 {
+/* ---------- UTILITY CLASSES ---------- */
+
+.heading-l {
   text-align: center;
-  margin-top: 1.6rem;
+  padding-top: 1.6rem;
   font-weight: 500;
   font-size: 2.6rem;
 }
 
-body {
-  background: var(--dark-color);
-  color: var(--light-color);
-  font-family: 'Dosis', sans-serif;
-}
-
-#all,
-#today,
-#completed {
-  display: flex;
-  flex-direction: column;
-  background: var(--mid-color);
-  width: 20rem;
-  align-items: center;
-  border: solid 1.5px var(--mid-color);
-  border-radius: 5px;
-  height: 24rem;
+.heading-m {
+  margin-top: 1.4rem;
+  font-weight: 500;
 }
 
 .btn {
   padding: 0.5rem 1.1rem;
   border-radius: 5px;
   cursor: pointer;
+  margin: 1rem 0 0.5rem 0;
 }
 
 .btn:hover {
@@ -58,6 +57,9 @@ body {
   background: rgb(122, 120, 120);
   color: white;
 }
+
+/* ------- SPECIFIC ELEMENT STYLINGS ------- */
+
 
 .task-input form {
   display: flex;
@@ -70,41 +72,29 @@ body {
   padding: 0.3rem 1.3rem;
 }
 
-ul {
-  width: 16rem;
-  height: 15rem;
-}
-
-li {
-  display: grid;
-  grid-template-columns: 8fr 1fr 1fr 1fr;
-  margin-top: 2.5px;
-}
-
-li:hover {
-  cursor: pointer;
-}
-
-h2,
-.btn,
-ul {
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.boxes h2 {
-  margin-top: 1.4rem;
-  font-weight: 500;
-}
-
 .boxes ul {
   font-weight: 300;
   font-size: 0.9rem;
   letter-spacing: 0.6px;
+  width: 16rem;
+  height: 15rem;
+  margin: 0.5rem 0;
+}
+
+.boxes ul li {
+  display: grid;
+  grid-template-columns: 8fr 1fr 1fr 1fr;
+  margin-top: 2.5px;
+  border-bottom: 0.3px dotted var(--edge-color);
+  padding: 4px 0;
+}
+
+.boxes ul li:hover {
+  cursor: pointer;
 }
 
 .alert {
-  background: rgb(75, 75, 75);
+  background: var(--edge-color);
   width: 25rem;
   height: 10rem;
   display: flex;
@@ -131,8 +121,8 @@ ul {
 }
 
 .alert p {
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 400;
 }
 
 .fa-calendar-plus:hover {
@@ -148,5 +138,27 @@ ul {
 .fa-trash-alt:hover {
   color:red;
   cursor: pointer;
+  
+}
 
+#all,
+#today,
+#completed {
+  display: flex;
+  flex-direction: column;
+  background: var(--edge-color);
+  width: 20rem;
+  align-items: center;
+  border: solid 1.5px var(--edge-color);
+  border-radius: 5px;
+  height: 24.5rem;
+}
+
+.blurry {
+  height:60rem;
+  width:80rem;
+  position: absolute;
+  filter: blur(1px);
+  background: rgba(46, 46, 46, 0.781);
+  display: none;
 }
