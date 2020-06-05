@@ -92,6 +92,17 @@ function onMove (e, ul, key) {
   localStorage.setItem(key, JSON.stringify(tasks));
 };
 
+// REMOVE THE TASK ITEM FROM THE LS THAT IT CAME FROM UPON DRAGGING IT
+function removeOnDrag (data, key) {
+  const movedTask = document.getElementById(data).innerText;
+    const allTasks = retrieveTasks(key); 
+    allTasks.forEach((obj, index) => {
+      if (obj === movedTask) {
+        allTasks.splice(index, 1);
+      } 
+      localStorage.setItem(key, JSON.stringify(allTasks));
+    })
+}
 
 // RETRIEVE TASKS FROM LS AND ATTACH TO THE DOM
 window.onload = () => {
@@ -227,7 +238,7 @@ function drop_handler(e) {
   const data = e.dataTransfer.getData("text/plain");
   e.target.appendChild(document.getElementById(data));
 
-
+// NEED THE BELOW CODE TO WORK FOR EACH LIST - IT MUST DETECT WHICH LIST THE TASK CAME FROM SO THAT IT KNOWS WHICH LS KEY TO DELETE IT FROM
   
   if (e.target.parentElement.id === 'today') {
     // Move selected task to 'today' in LS
@@ -235,16 +246,29 @@ function drop_handler(e) {
     tasks.push(document.getElementById(data).innerText);
     localStorage.setItem('todayTasks', JSON.stringify(tasks));
     // Remove the item from original list LS
-    const movedTask = document.getElementById(data).innerText;
-    const allTasks = retrieveTasks('allTasks');
-    allTasks.forEach((obj, index) => {
-      if (obj === movedTask ) {
-        allTasks.splice(index, 1);
-      } 
-      localStorage.setItem('allTasks', JSON.stringify(allTasks));
-    })
+    removeOnDrag(data, 'allTasks');
+    removeOnDrag(data, 'completeTasks');
   }
   
+  if (e.target.parentElement.id === 'completed') {
+    // Move selected task to 'today' in LS
+    tasks = retrieveTasks('completeTasks');
+    tasks.push(document.getElementById(data).innerText);
+    localStorage.setItem('completeTasks', JSON.stringify(tasks));
+    // Remove the item from original list LS
+    removeOnDrag(data, 'allTasks');
+    removeOnDrag(data, 'todayTasks');
+  }
+
+  if (e.target.parentElement.id === 'all') {
+    // Move selected task to 'today' in LS
+    tasks = retrieveTasks('allTasks');
+    tasks.push(document.getElementById(data).innerText);
+    localStorage.setItem('allTasks', JSON.stringify(tasks));
+    // Remove the item from original list LS
+    removeOnDrag(data, 'completeTasks');
+    removeOnDrag(data, 'todayTasks');
+  }
 
 
 }
@@ -256,5 +280,4 @@ window.addEventListener("mousedown", (e) => {
     selectedTask.addEventListener("dragstart", dragstart_handler);
   }
 });
-
 
