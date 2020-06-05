@@ -10,6 +10,8 @@ const alert = document.querySelector('.alert');
 const icons =
   '<i class="far fa-calendar-plus"></i> <i class="fas fa-check"></i> <i class="fas fa-trash-alt"></i>';
 
+
+// EVENT LISTENERS
 form.addEventListener("submit", taskAdd);
 document.body.addEventListener("click", taskDelete);
 document.body.addEventListener("click", taskToday);
@@ -92,18 +94,6 @@ function onMove (e, ul, key) {
   localStorage.setItem(key, JSON.stringify(tasks));
 };
 
-// REMOVE THE TASK ITEM FROM THE LS THAT IT CAME FROM UPON DRAGGING IT
-function removeOnDrag (data, key) {
-  const movedTask = document.getElementById(data).innerText;
-    const allTasks = retrieveTasks(key); 
-    allTasks.forEach((obj, index) => {
-      if (obj === movedTask) {
-        allTasks.splice(index, 1);
-      } 
-      localStorage.setItem(key, JSON.stringify(allTasks));
-    })
-}
-
 // RETRIEVE TASKS FROM LS AND ATTACH TO THE DOM
 window.onload = () => {
   if (localStorage.getItem("allTasks") !== null) {
@@ -138,8 +128,6 @@ function taskDelete(e) {
     }
   }
 }
-
-
 
 // MOVE TASK TO TODAY LIST
 function taskToday(e) {
@@ -221,7 +209,26 @@ function clearCompleted() {
 }
 
 
-// ADD DRAG AND DROP FUNCTIONALITY
+// --------------------- ADD DRAG AND DROP FUNCTIONALITY --------------------- //
+
+// REMOVE THE TASK ITEM FROM THE LS THAT IT CAME FROM UPON DRAGGING IT
+function removeOnDrag (data, key) {
+  const movedTask = document.getElementById(data).innerText;
+    const allTasks = retrieveTasks(key); 
+    allTasks.forEach((obj, index) => {
+      if (obj === movedTask) {
+        allTasks.splice(index, 1);
+      } 
+      localStorage.setItem(key, JSON.stringify(allTasks));
+    })
+  }
+
+  function retrieveAndSet (data, key) {
+    tasks = retrieveTasks(key);
+    tasks.push(document.getElementById(data).innerText);
+    localStorage.setItem(key, JSON.stringify(tasks));
+  }
+
 
 function dragstart_handler(e) {
   e.dataTransfer.setData("text/plain", e.target.id);
@@ -239,38 +246,25 @@ function drop_handler(e) {
   e.target.appendChild(document.getElementById(data));
 
 // NEED THE BELOW CODE TO WORK FOR EACH LIST - IT MUST DETECT WHICH LIST THE TASK CAME FROM SO THAT IT KNOWS WHICH LS KEY TO DELETE IT FROM
-  
-  if (e.target.parentElement.id === 'today') {
-    // Move selected task to 'today' in LS
-    tasks = retrieveTasks('todayTasks');
-    tasks.push(document.getElementById(data).innerText);
-    localStorage.setItem('todayTasks', JSON.stringify(tasks));
-    // Remove the item from original list LS
-    removeOnDrag(data, 'allTasks');
-    removeOnDrag(data, 'completeTasks');
-  }
-  
-  if (e.target.parentElement.id === 'completed') {
-    // Move selected task to 'today' in LS
-    tasks = retrieveTasks('completeTasks');
-    tasks.push(document.getElementById(data).innerText);
-    localStorage.setItem('completeTasks', JSON.stringify(tasks));
-    // Remove the item from original list LS
-    removeOnDrag(data, 'allTasks');
-    removeOnDrag(data, 'todayTasks');
-  }
+  const target = e.target.parentElement.id;
 
-  if (e.target.parentElement.id === 'all') {
-    // Move selected task to 'today' in LS
-    tasks = retrieveTasks('allTasks');
-    tasks.push(document.getElementById(data).innerText);
-    localStorage.setItem('allTasks', JSON.stringify(tasks));
-    // Remove the item from original list LS
-    removeOnDrag(data, 'completeTasks');
-    removeOnDrag(data, 'todayTasks');
+  switch (target) {
+    case 'today':
+      retrieveAndSet(data, 'todayTasks');
+      removeOnDrag(data, 'allTasks');
+      removeOnDrag(data, 'completeTasks');
+    break;
+    case 'completed' :
+      retrieveAndSet(data, 'completeTasks');
+      removeOnDrag(data, 'allTasks');
+      removeOnDrag(data, 'todayTasks');
+    break;
+    case 'all' :
+      retrieveAndSet(data, 'allTasks')
+      removeOnDrag(data, 'completeTasks');
+      removeOnDrag(data, 'todayTasks');
+    break;
   }
-
-
 }
 
 window.addEventListener("mousedown", (e) => {
