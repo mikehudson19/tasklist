@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Task List</title>
   <script src="https://kit.fontawesome.com/f97d0e5ba4.js" crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Dosis:display=swap" rel="stylesheet"> 
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Dosis:display=swap" rel="stylesheet">  -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,17 +25,17 @@
   <div id='all'>
     <h2>All Tasks</h2>
     <button class='btn btn-clear'></i>Clear All Tasks</button>
-    <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
+    <ul ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
   <div id='today'>
     <h2>Today's Tasks</h2>
     <button class='btn btn-move'>Move Back to All</button>
-    <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
+    <ul ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
   <div id='completed'>
     <h2>Completed Tasks</h2>
     <button class='btn btn-completed'>Clear Completed Tasks</button>
-    <ul style="height:5rem" ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
+    <ul ondrop="drop_handler(event)" ondragover="dragover_handler(event)"></ul>
   </div>
 </div>
   <script src="app.js"></script>
